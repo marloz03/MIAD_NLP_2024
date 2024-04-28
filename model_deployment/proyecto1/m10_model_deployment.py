@@ -4,8 +4,9 @@ import pandas as pd
 import joblib
 import sys
 import os
+from sklearn.preprocessing import OneHotEncoder
 
-def predict_price(year, mileage, state, make, model, mapping) :
+def predict_price(year, mileage, state, make, model, mapping, encoder) :
 
     #Cargo el modelo para predecir
     rgr = joblib.load(os.path.dirname(__file__) + '/car_price.pkl') 
@@ -35,6 +36,10 @@ if __name__ == "__main__":
         model_means = dataTraining.groupby('Model')['Price'].mean()
         model_mapping = model_means.to_dict()
 
+        #Extraigo el encoder
+        encoder = OneHotEncoder(handle_unknown='ignore')
+        encoder.fit(dataTraining[['State', 'Make']])
+
         year= sys.argv[1]
         mileage= sys.argv[2]
         state= sys.argv[3]
@@ -42,7 +47,7 @@ if __name__ == "__main__":
         model=sys.argv[5]
         mapping = model_mapping
 
-        precio_estimado = predict_price(year, mileage, state, make, model, mapping)
+        precio_estimado = predict_price(year, mileage, state, make, model, mapping, encoder)
         
         print('Precio estimado: ', precio_estimado)
         
