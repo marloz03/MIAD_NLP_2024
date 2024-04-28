@@ -20,7 +20,7 @@ def predict_price(year, mileage, state, make, model, mapping, encoder) :
     dataTesting_encoded.drop(['State', 'Make', 'Model'], axis=1, inplace=True)
 
     # Make prediction
-    y_test_pred = rgr.predict(x_test_df)[0,1]
+    y_test_pred = rgr.predict(dataTesting_encoded)[0,1]
 
     return y_test_pred
 
