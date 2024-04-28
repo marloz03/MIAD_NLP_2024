@@ -21,7 +21,6 @@ def predict_price(year, mileage, state, make, model, mapping, encoder) :
 
     # Make prediction
     y_test_pred = round(rgr.predict(dataTesting_encoded)[0], 2)
-    print(y_test_pred)
 
     return y_test_pred
 
