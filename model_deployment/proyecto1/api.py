@@ -5,7 +5,7 @@ from flask_restx import Api, Resource, fields
 from m10_model_deployment import predict_price
 import joblib
 from flask_cors import CORS
-import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes and origins
@@ -70,7 +70,7 @@ class CarPriceApi(Resource):
         args = parser.parse_args()
         
         return {
-         "result": predict_price(args['YEAR'], args['MILEAGE'], args['STATE'], args['MAKE'], args['MODEL'], model_mapping)
+         "result": predict_price(args['YEAR'], args['MILEAGE'], args['STATE'], args['MAKE'], args['MODEL'], model_mapping, encoder)
         }, 200
     
     
@@ -80,5 +80,9 @@ if __name__ == '__main__':
     dataTraining = pd.read_csv('dataTrain_carListings.zip')
     model_means = dataTraining.groupby('Model')['Price'].mean()
     model_mapping = model_means.to_dict()
+
+    #Extraigo el encoder
+    encoder = OneHotEncoder(handle_unknown='ignore')
+    encoder.fit(dataTraining[['State', 'Make']])
 
     app.run(debug=True, use_reloader=False, host='0.0.0.0', port=5000)
