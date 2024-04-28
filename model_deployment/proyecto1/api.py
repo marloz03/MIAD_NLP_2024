@@ -6,6 +6,7 @@ from m10_model_deployment import predict_price
 import joblib
 from flask_cors import CORS
 from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes and origins
