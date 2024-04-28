@@ -5,6 +5,7 @@ from flask_restx import Api, Resource, fields
 from m10_model_deployment import predict_price
 import joblib
 from flask_cors import CORS
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes and origins
