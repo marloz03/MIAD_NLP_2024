@@ -12,12 +12,16 @@ def predict_price(year, mileage, state, make, model, mapping, encoder) :
     rgr = joblib.load(os.path.dirname(__file__) + '/car_price.pkl') 
 
     dataTesting = pd.DataFrame([[year, mileage, state, make, model]], columns=['Year', 'Mileage', 'State', 'Make', 'Model'])
+    print(dataTesting)
 
     dataTesting['Model_Encoded'] = dataTesting['Model'].map(mapping)
     encoded_features = encoder.transform(dataTesting[['State', 'Make']])
     encoded_df = pd.DataFrame(encoded_features.toarray(), columns=encoder.get_feature_names_out(['State', 'Make']))
+    print(encoded_df)
     dataTesting_encoded = pd.concat([dataTesting, encoded_df], axis=1)
     dataTesting_encoded.drop(['State', 'Make', 'Model'], axis=1, inplace=True)
+
+    print(dataTesting_encoded)
 
     # Make prediction
     y_test_pred = rgr.predict(dataTesting_encoded)#[0]
