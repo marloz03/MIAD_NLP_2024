@@ -71,7 +71,7 @@ class CarPriceApi(Resource):
         args = parser.parse_args()
         
         return {
-         "result": str(predict_price(args['YEAR'], args['MILEAGE'], args['STATE'], args['MAKE'], args['MODEL'], model_mapping, encoder))
+         "precio estimado": predict_price(args['YEAR'], args['MILEAGE'], args['STATE'], args['MAKE'], args['MODEL'], model_mapping, encoder)
         }, 200
     
     
