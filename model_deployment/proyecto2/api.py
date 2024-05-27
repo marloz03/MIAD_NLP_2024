@@ -72,7 +72,7 @@ class MovieClassApi(Resource):
         args = parser.parse_args()
         plot_procesado = increase_weight_adjectives(preprocess_text(args['plot']))
         return {
-         "Clasificación:": predict_class(plot_procesado, tfidf_vectorizer)
+         "Clasificacion:": predict_class(plot_procesado, tfidf_vectorizer)
         }, 200
     
     
