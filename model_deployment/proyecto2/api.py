@@ -2,7 +2,7 @@
 
 from flask import Flask
 from flask_restx import Api, Resource, fields
-from m10_model_deployment import predict_price
+from m10_model_deployment import predict_class
 import joblib
 from flask_cors import CORS
 from sklearn.preprocessing import OneHotEncoder
