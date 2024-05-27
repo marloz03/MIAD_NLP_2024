@@ -87,6 +87,7 @@ if __name__ == '__main__':
     # Asignar nombres a las columnas
     data_training.columns = ['ID', 'year', 'title', 'plot', 'genres', 'rating']
     
+    print("Preprocesando texto...")
     # Aplicar preprocesamiento a la columna 'plot'
     data_training['plot'] = data_training['plot'].apply(preprocess_text)
     
@@ -101,6 +102,7 @@ if __name__ == '__main__':
     # Filtrar los datos según la longitud de 'plot'
     filtered_data_training = data_training[data_training['plot_length'] <= threshold_plot_length]
 
+    print("Cargando vectorizer...")
     tfidf_vectorizer = TfidfVectorizer(max_features=200000, stop_words='english', token_pattern=r'\b[A-Za-z]+\b')
     X_train_tfidf = tfidf_vectorizer.fit_transform(filtered_data_training['plot'])
 
