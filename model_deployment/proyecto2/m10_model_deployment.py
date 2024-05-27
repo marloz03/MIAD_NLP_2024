@@ -4,50 +4,34 @@ import pandas as pd
 import joblib
 import sys
 import os
-from sklearn.preprocessing import OneHotEncoder
 
-def predict_price(year, mileage, state, make, model, mapping, encoder) :
+
+
+
+def predict_class(plot, tfidf_vectorizer) :
 
     #Cargo el modelo para predecir
-    rgr = joblib.load(os.path.dirname(__file__) + '/car_price.pkl')
-
-    dataTesting = pd.DataFrame([[year, mileage, state, make, model]], columns=['Year', 'Mileage', 'State', 'Make', 'Model'])
-
-    dataTesting['Model_Encoded'] = dataTesting['Model'].map(mapping)
-    encoded_features = encoder.transform(dataTesting[['State', 'Make']])
-    encoded_df = pd.DataFrame(encoded_features.toarray(), columns=encoder.get_feature_names_out(['State', 'Make']))
-    dataTesting_encoded = pd.concat([dataTesting, encoded_df], axis=1)
-    dataTesting_encoded.drop(['State', 'Make', 'Model'], axis=1, inplace=True)
-
-    # Make prediction
-    y_test_pred = round(rgr.predict(dataTesting_encoded)[0], 2)
-
-    return y_test_pred
-
-
-if __name__ == "__main__":
+    clf = joblib.load(os.path.dirname(__file__) + '/clasificador.pkl')
     
-    if len(sys.argv) == 1:
-        print('Por favor agregue los siguientes datos: Year, Mileage, State, Make, Model')
-        
-    else:
-        #Cargo la data de entrenamiento para el mapping
-        dataTraining = pd.read_csv('dataTrain_carListings.zip')
-        model_means = dataTraining.groupby('Model')['Price'].mean()
-        model_mapping = model_means.to_dict()
+    data_testing = pd.DataFrame([[plot]], columns=['plot'])
+    
+    X_test_tfidf = tfidf_vectorizer.transform(data_testing['plot'])
+    
+    cols = ['Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Family',
+        'Fantasy', 'Film-Noir', 'History', 'Horror', 'Music', 'Musical', 'Mystery', 'News', 'Romance',
+        'Sci-Fi', 'Short', 'Sport', 'Thriller', 'War', 'Western']
+    
+    df_respuesta = pd.DataFrame(clf.predict(X_test_tfidf), columns = cols)
+    respuesta_final = ''
 
-        #Extraigo el encoder
-        encoder = OneHotEncoder(handle_unknown='ignore')
-        encoder.fit(dataTraining[['State', 'Make']])
+    for categoria, valor in df_respuesta.items():
+        if valor[0] == 1 and respuesta_final == '':
+            respuesta_final += str(categoria)
+        elif valor[0] == 1 and respuesta_final != '':
+            respuesta_final += ', ' + str(categoria)
+    
+    if respuesta_final == '':
+        respuesta_final = 'El clasificador no encontró ningún género para esta película, por favor intente con otro plot.'
 
-        year= sys.argv[1]
-        mileage= sys.argv[2]
-        state= sys.argv[3]
-        make=sys.argv[4]
-        model=sys.argv[5]
-        mapping = model_mapping
-
-        precio_estimado = predict_price(year, mileage, state, make, model, mapping, encoder)
-        
-        print('Precio estimado: ', precio_estimado)
+    return respuesta_final
         
