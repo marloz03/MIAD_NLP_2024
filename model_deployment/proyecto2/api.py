@@ -60,7 +60,7 @@ parser.add_argument(
 
 
 resource_fields = api.model('Resource', {
-    'Clasificación:': fields.String,
+    'Clasificacion:': fields.String,
 })
 
 @ns.route('/')
